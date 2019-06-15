@@ -11,6 +11,7 @@ router.use(express.json());
 // GET /api/users 200 - Returns the currently authenticated user
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
 
+//Getting all users 
 router.get("/", authenticate, (req, res) => {
   res.status(200);
   //Sendind the user information once authenticated
@@ -23,7 +24,7 @@ router.get("/", authenticate, (req, res) => {
   });
 });
 
-//Route to create a new user
+//Creating new user
 router.post("/", (req, res) => {
   User.findOne({ where: { emailAddress: req.body.emailAddress } })
     .then(user => {

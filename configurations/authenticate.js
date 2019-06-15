@@ -4,7 +4,7 @@ const User = require("../models").User;
 const authenticate = require("basic-auth");
 const bcryptjs = require("bcryptjs");
 
-//Autheticate User 
+//Authenticating user
 module.exports = (req, res, next) => {
   const info= authenticate(req);
   let message = null;
@@ -22,8 +22,8 @@ module.exports = (req, res, next) => {
           message = `${info.name} not found`;
         }
       })
-      .catch(e => {
-        res.status(500).json({ Error: e });
+      .catch(err => {
+        res.status(500).json({ Error: err });
       })
       .then(() => {
         if (message) {

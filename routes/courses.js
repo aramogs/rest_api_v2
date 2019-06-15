@@ -21,8 +21,22 @@ router.get("/", (req,res) => {
     .then(data => res.json({message:"Data requested:",data}))
     .catch(err => res.status(400).json({ message: "Error:" , err}));
 });
+//Finding course by :id
+router.get("/:id", (req, res) => {
+  Course.findOne({ where: { id: req.params.id } })
+    .then(course => {
+      if (!course) {
+        res.status(404).json({ message: "Course not found" });
+      } else {
+        res.status(200).json({ message: "Course information:", course });
+      }
+    })
+    .catch(error => {
+      res.send(500, error);
+    });
+});
 
-// Post new Course
+// Posting new course
 router.post("/", authenticate, (req, res) => {
   if (!req.body.title || !req.body.description) {
     res.status(400).json({ message: "Course Title/Description must not be empty" });
@@ -48,7 +62,6 @@ router.post("/", authenticate, (req, res) => {
                     MaterialsNeeded: req.body.materialsNeeded,
                     CreatedAt: req.body.createdAt,
                     updatedAt: req.body.updatedAt
-
                   });
                 })
                 .catch(err => {
@@ -68,20 +81,7 @@ router.post("/", authenticate, (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {
-  Course.findOne({ where: { id: req.params.id } })
-    .then(course => {
-      if (!course) {
-        res.status(404).json({ message: "Course not found" });
-      } else {
-        res.status(200).json({ message: "Course information:", course });
-      }
-    })
-    .catch(error => {
-      res.send(500, error);
-    });
-});
-
+//Updating course depending on :id
 router.put("/:id", authenticate, (req, res) => {
   if (!req.body.title || !req.body.description) {
     res.status(400).json({ message: "Course Title/Description must not be empty to Update" });
@@ -122,6 +122,7 @@ router.put("/:id", authenticate, (req, res) => {
   }
 });
 
+//Deleting course depending on :id
 router.delete("/:id", authenticate, (req, res) => {
   Course.findByPk(req.params.id)
     .then(course => {
