@@ -34,15 +34,16 @@ router.post("/", (req, res) => {
         User.create(req.body)
           .then(() => {
             res
-              .location("/users")
-              .status(200)
-              .json({
-                message: " User created!",
-                Fullname: req.body.firstName+' '+req.body.lastName,
-                FirstName: req.body.firstName,
-                lastName: req.body.lastName,
-                emailAddress: req.body.emailAddress
-              });
+            .location("/")
+            .status(201).end()
+              // .json({
+              //   message: " User created!",
+              //   Fullname: req.body.firstName+' '+req.body.lastName,
+              //   FirstName: req.body.firstName,
+              //   lastName: req.body.lastName,
+              //   emailAddress: req.body.emailAddress,
+              //   test:result.createdAt
+              // });
           })
           .catch(err => {
             res.status(500).json({ Error: err });

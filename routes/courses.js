@@ -16,10 +16,10 @@ router.use(express.json());
 
 
 //Using findAll to Get all courses
-router.get("/", (req,res) => {
+router.get("/", (req, res) => {
   Course.findAll()
-    .then(data => res.json({message:"Data requested:",data}))
-    .catch(err => res.status(400).json({ message: "Error:" , err}));
+    .then(data => res.json({ message: "Data requested:", data }))
+    .catch(err => res.status(400).json({ message: "Error:", err }));
 });
 //Finding course by :id
 router.get("/:id", (req, res) => {
@@ -49,20 +49,21 @@ router.post("/", authenticate, (req, res) => {
               res.status(403).json({ message: "Id already Exists" });
             } else if (req.body) {
               Course.create(req.body)
-                .then(() => {
+                .then(result => {
                   res
-                    .location("/courses/" + req.body.id)
-                  .status(201)
-                  .json({
-                    message: "New Course added",
-                    User: req.body.userId,
-                    Title: req.body.title,
-                    Description: req.body.description,
-                    EstimatedTime: req.body.estimatedTime,
-                    MaterialsNeeded: req.body.materialsNeeded,
-                    CreatedAt: req.body.createdAt,
-                    updatedAt: req.body.updatedAt
-                  });
+                    .location("/api/courses/" + result.id  )
+                    .status(201)
+                    .end()
+                    // .json({
+                    //   message: "New Course added",
+                    //   User: req.body.userId,
+                    //   Title: req.body.title,
+                    //   Description: req.body.description,
+                    //   EstimatedTime: req.body.estimatedTime,
+                    //   MaterialsNeeded: req.body.materialsNeeded,
+                    //   CreatedAt: req.body.createdAt,
+                    //   updatedAt: req.body.updatedAt
+                    // });
                 })
                 .catch(err => {
                   res.status(500).json({ Error: err });
@@ -94,15 +95,16 @@ router.put("/:id", authenticate, (req, res) => {
               if (data.id === req.body.userId) {
                 course.update(req.body).userId;
                 res
-                  .location("/courses/" + req.body.id)
-                  .status(201)
-                  .json({
-                    message: "Course updated",
-                    User: req.body.userId,
-                    Id: req.params.id,
-                    NewTitle: req.body.title,
-                    NewDescripction: req.body.description
-                  });
+                  // .location("/courses/" + req.body.id)
+                  .status(204)
+                  .end()
+                // .json({
+                //   message: "Course updated",
+                //   User: req.body.userId,
+                //   Id: req.params.id,
+                //   NewTitle: req.body.title,
+                //   NewDescripction: req.body.description
+                // });
               } else {
                 res
                   .status(401)
@@ -131,7 +133,9 @@ router.delete("/:id", authenticate, (req, res) => {
           .then(data => {
             if (data.id === req.currentUser.id) {
               course.destroy();
-              res.status(201).json({ message: "Course Deleted" });
+              res.status(204)
+                .end();
+              // .json({ message: "Course Deleted" });
             } else {
               res.status(401).json({
                 Error: "This course was not created by current User"
